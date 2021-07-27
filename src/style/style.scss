@@ -50,6 +50,7 @@ main {
     input[type="text"] {
       padding: 1em;
       width: 60vw;
+      max-width: 400px;
       font-weight: 500;
       color: hsl(0%, 0%, 17%);
       border: none;
@@ -68,4 +69,29 @@ main {
 .map-section {
   height: 60vh;
   background: blue;
+}
+
+@media only screen and (min-width: 1024px) {
+  .highlight-section {
+    h1 {
+      padding: 2em;
+    }
+    .results {
+      top: 100%;
+      max-width: 717px;
+      flex-direction: row;
+      justify-content: space-around;
+      h6 {
+        text-align: start;
+      }
+      .result-row {
+        width: 150px;
+      }
+      .line {
+        height: 45px;
+        width: 1px;
+        background-color: rgba(184, 184, 184, 0.609);
+      }
+    }
+  }
 }
