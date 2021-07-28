@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Leaflet = require("leaflet");
 
 const locationMap = document.getElementById("location-map");
@@ -28,9 +29,8 @@ inputForm.addEventListener("submit", (e) => {
 let lat = 51.505;
 let lang = -0.09;
 //const myMap = document.getElementById("my-map");
-const accessToken =
-  "pk.eyJ1IjoiZGV2YmlsbHkiLCJhIjoiY2tybjU2MWg1MHRyZDJybnZwdzBkbjJ1ZSJ9.wpkz8I0D7veTwCUjANha0Q";
-const API_KEY = "at_QY2m6gKaAP8QJGKvKv64W9vlgsYgk";
+const accessToken = process.env.ACCESS_TOKEN;
+const API_KEY = process.env.API_KEY;
 buildMap(lat, lang);
 
 function fetchData(value) {
