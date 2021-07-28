@@ -1,5 +1,7 @@
 const Leaflet = require("leaflet");
 
+const locationMap = document.getElementById("location-map");
+
 const searchField = document.getElementById("search-field");
 const inputForm = document.getElementById("input-form");
 const ipResult = document.getElementById("ip-result");
@@ -26,23 +28,13 @@ inputForm.addEventListener("submit", (e) => {
     fetchOnDomain(searchValue);
   }
 });
-
+let lat = 51.505;
+let lang = -0.09;
 //const myMap = document.getElementById("my-map");
 const accessToken =
   "pk.eyJ1IjoiZGV2YmlsbHkiLCJhIjoiY2tybjU2MWg1MHRyZDJybnZwdzBkbjJ1ZSJ9.wpkz8I0D7veTwCUjANha0Q";
-let myMap = Leaflet.map("my-map").setView([51.505, -0.09], 13);
-L.tileLayer(
-  "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-  {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: "mapbox/streets-v11",
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: accessToken,
-  }
-).addTo(myMap);
+
+buildMap(lat, lang);
 
 function fetchOnIp(ipAddress) {
   const API_KEY = "at_QY2m6gKaAP8QJGKvKv64W9vlgsYgk";
@@ -64,6 +56,8 @@ function fetchOnIp(ipAddress) {
       locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
       timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
       ispResult.innerHTML = data.isp;
+      buildMap(data.location.lat, data.location.lng);
+      //  myMap = Leaflet.map("my-map").setView([51.505, -0.09], 13);
     })
     .catch((error) => console.log("error", error));
 }
@@ -84,10 +78,31 @@ function fetchOnDomain(domain) {
     .then((data) => {
       loader.style.display = "none";
       resultBox.style.display = "flex";
-      ipResult.innerHTML = data.ip;
-      locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
-      timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
-      ispResult.innerHTML = data.isp;
+      if (data.code === undefined) {
+        ipResult.innerHTML = data.ip;
+        locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
+        timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
+        ispResult.innerHTML = data.isp;
+        buildMap(data.location.lat, data.location.lng);
+      }
+      //return { lat: data.location.lat, long: data.location.lng };
     })
     .catch((error) => console.log("error", error));
+}
+
+function buildMap(lat, long) {
+  locationMap.innerHTML = "<div id='my-map'></div>";
+  let myMap = Leaflet.map("my-map").setView([lat, long], 13);
+  Leaflet.tileLayer(
+    "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+    {
+      attribution:
+        'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: "mapbox/streets-v11",
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: accessToken,
+    }
+  ).addTo(myMap);
 }
