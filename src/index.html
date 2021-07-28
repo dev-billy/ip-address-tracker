@@ -32,10 +32,15 @@
     <section class="highlight-section">
       <div>
         <h1>IP Address Tracker</h1>
-        <div class='input'>
-          <input type='text' placeholder="Search for any IP address or domain">
-          <button><img alt="button" src="./images/icon-arrow.svg" /></button>
-        </div>
+        <form class='input' id='input-form'>
+          <input type='text' id='search-field' placeholder="Search for any IP address or domain" required>
+          <button type='submit' id='submit-btn'><img alt="button" src="./images/icon-arrow.svg" /></button>
+        </form>
+
+      </div>
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
       </div>
       <div class='results'>
         <div class='result-row'>
