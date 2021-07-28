@@ -2,6 +2,13 @@ const Leaflet = require("leaflet");
 
 const searchField = document.getElementById("search-field");
 const inputForm = document.getElementById("input-form");
+const ipResult = document.getElementById("ip-result");
+const locationResult = document.getElementById("location-result");
+const timezoneResult = document.getElementById("timezone-result");
+const ispResult = document.getElementById("isp-result");
+
+const loader = document.getElementById("loader");
+const resultBox = document.getElementById("results");
 
 const ValidIpAddressRegex =
   /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
@@ -10,8 +17,12 @@ inputForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let searchValue = searchField.value;
   if (ValidIpAddressRegex.test(searchValue)) {
+    loader.style.display = "flex";
+    resultBox.style.display = "none";
     fetchOnIp(searchValue);
   } else {
+    loader.style.display = "flex";
+    resultBox.style.display = "none";
     fetchOnDomain(searchValue);
   }
 });
@@ -45,7 +56,15 @@ function fetchOnIp(ipAddress) {
     requestOptions
   )
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((result) => JSON.parse(result))
+    .then((data) => {
+      loader.style.display = "none";
+      resultBox.style.display = "flex";
+      ipResult.innerHTML = data.ip;
+      locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
+      timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
+      ispResult.innerHTML = data.isp;
+    })
     .catch((error) => console.log("error", error));
 }
 
@@ -61,6 +80,14 @@ function fetchOnDomain(domain) {
     requestOptions
   )
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((result) => JSON.parse(result))
+    .then((data) => {
+      loader.style.display = "none";
+      resultBox.style.display = "flex";
+      ipResult.innerHTML = data.ip;
+      locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
+      timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
+      ispResult.innerHTML = data.isp;
+    })
     .catch((error) => console.log("error", error));
 }
