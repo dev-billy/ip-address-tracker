@@ -18,35 +18,34 @@ const ValidIpAddressRegex =
 inputForm.addEventListener("submit", (e) => {
   e.preventDefault();
   let searchValue = searchField.value;
-  if (ValidIpAddressRegex.test(searchValue)) {
-    loader.style.display = "flex";
-    resultBox.style.display = "none";
-    fetchOnIp(searchValue);
-  } else {
-    loader.style.display = "flex";
-    resultBox.style.display = "none";
-    fetchOnDomain(searchValue);
-  }
+  loader.style.display = "flex";
+  resultBox.style.display = "none";
+  fetchData(searchValue);
 });
+
+//init lat & long
+
 let lat = 51.505;
 let lang = -0.09;
 //const myMap = document.getElementById("my-map");
 const accessToken =
   "pk.eyJ1IjoiZGV2YmlsbHkiLCJhIjoiY2tybjU2MWg1MHRyZDJybnZwdzBkbjJ1ZSJ9.wpkz8I0D7veTwCUjANha0Q";
-
+const API_KEY = "at_QY2m6gKaAP8QJGKvKv64W9vlgsYgk";
 buildMap(lat, lang);
 
-function fetchOnIp(ipAddress) {
-  const API_KEY = "at_QY2m6gKaAP8QJGKvKv64W9vlgsYgk";
+function fetchData(value) {
   let requestOptions = {
     method: "GET",
     redirect: "follow",
   };
+  let url;
+  if (ValidIpAddressRegex.test(value)) {
+    url = `https://geo.ipify.org/api/v1?apiKey=${API_KEY}&ipAddress=${value}`;
+  } else {
+    url = `https://geo.ipify.org/api/v1?apiKey=${API_KEY}&domain=${value}`;
+  }
 
-  fetch(
-    `https://geo.ipify.org/api/v1?apiKey=${API_KEY}&ipAddress=${ipAddress}`,
-    requestOptions
-  )
+  fetch(url, requestOptions)
     .then((response) => response.text())
     .then((result) => JSON.parse(result))
     .then((data) => {
@@ -58,34 +57,6 @@ function fetchOnIp(ipAddress) {
       ispResult.innerHTML = data.isp;
       buildMap(data.location.lat, data.location.lng);
       //  myMap = Leaflet.map("my-map").setView([51.505, -0.09], 13);
-    })
-    .catch((error) => console.log("error", error));
-}
-
-function fetchOnDomain(domain) {
-  const API_KEY = "at_QY2m6gKaAP8QJGKvKv64W9vlgsYgk";
-  let requestOptions = {
-    method: "GET",
-    redirect: "follow",
-  };
-
-  fetch(
-    `https://geo.ipify.org/api/v1?apiKey=${API_KEY}&domain=${domain}`,
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => JSON.parse(result))
-    .then((data) => {
-      loader.style.display = "none";
-      resultBox.style.display = "flex";
-      if (data.code === undefined) {
-        ipResult.innerHTML = data.ip;
-        locationResult.innerHTML = `${data.location.city}, ${data.location.country}`;
-        timezoneResult.innerHTML = `UTC ${data.location.timezone}`;
-        ispResult.innerHTML = data.isp;
-        buildMap(data.location.lat, data.location.lng);
-      }
-      //return { lat: data.location.lat, long: data.location.lng };
     })
     .catch((error) => console.log("error", error));
 }
