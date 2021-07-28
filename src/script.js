@@ -2,6 +2,7 @@ require("dotenv").config();
 const Leaflet = require("leaflet");
 
 const locationMap = document.getElementById("location-map");
+const iconLocation = require("./images/icon-location.svg");
 
 const searchField = document.getElementById("search-field");
 const inputForm = document.getElementById("input-form");
@@ -76,4 +77,11 @@ function buildMap(lat, long) {
       accessToken: accessToken,
     }
   ).addTo(myMap);
+  let myIcon = Leaflet.icon({
+    iconUrl: iconLocation,
+    iconSize: [46, 56],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76],
+  });
+  Leaflet.marker([lat, long], { icon: myIcon }).addTo(myMap);
 }
